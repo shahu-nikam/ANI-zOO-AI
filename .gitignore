@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Flask instance folder (holds the SQLite database)
+instance/*.db
+
+# User-uploaded images (keep the folder, ignore the contents)
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+
+# Growing training dataset (keep folder, ignore contents)
+dataset/animal/*
+!dataset/animal/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
