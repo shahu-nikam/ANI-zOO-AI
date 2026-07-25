@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ANI-zOO AI</title>
+
+    <link
+        rel="icon"
+        type="image/svg+xml"
+        href="{{ url_for('static', filename='favicon.svg') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+
+    <nav class="navbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🐾
+            </div>
+
+            <div>
+
+                <h2>ANI-zOO AI</h2>
+
+                <span>Smart Classifier</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav-right">
+
+            <div class="nav-links">
+                <span class="nav-user">{{ g.user['username'] }}</span>
+                <a href="{{ url_for('main.history') }}">History</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            </div>
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                Model Online
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <main class="main-container">
+
+
+        <section class="hero">
+
+            <p class="eyebrow">
+                NiksDevp Pvt limited
+            </p>
+
+
+            <h1>
+
+                Discover the animal
+
+                <br>
+
+                <span>inside your image.</span>
+
+            </h1>
+
+
+            <p class="hero-text">
+
+                Upload an image and identify the animal in seconds.
+
+            </p>
+
+        </section>
+
+
+        <section class="workspace">
+
+
+            <div class="upload-card">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>Upload Image</h3>
+
+                        <p>
+                            Supported formats: JPG, PNG, WEBP
+                        </p>
+
+                    </div>
+
+
+                    <div class="upload-icon">
+                        ↑
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    id="uploadForm"
+                >
+
+
+                    <label
+                        for="imageInput"
+                        class="drop-zone"
+                        id="dropZone"
+                    >
+
+
+                        <div
+                            class="preview-container"
+                            id="previewContainer"
+                        >
+
+                            <img
+                                id="previewImage"
+                                src=""
+                                alt="Image Preview"
+                            >
+
+                        </div>
+
+
+                        <div
+                            class="upload-content"
+                            id="uploadContent"
+                        >
+
+                            <div class="upload-circle">
+                                ↑
+                            </div>
+
+
+                            <h3>
+                                Drop your image here
+                            </h3>
+
+
+                            <p>
+                                or click to browse from your computer
+                            </p>
+
+                        </div>
+
+
+                        <input
+                            type="file"
+                            id="imageInput"
+                            name="image"
+                            accept="image/*"
+                            hidden
+                            required
+                        >
+
+                    </label>
+
+
+                    <button
+                        type="submit"
+                        class="predict-btn"
+                    >
+
+                        <span>
+                            Analyze Image
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+
+                {% if error %}
+
+                <div class="message error">
+
+                    {{ error }}
+
+                </div>
+
+                {% endif %}
+
+
+                {% if saved_message %}
+
+                <div class="message success">
+
+                    ✓ {{ saved_message }}
+
+                </div>
+
+                {% endif %}
+
+
+                {% if unknown %}
+
+                <div class="learning-form">
+
+                    <div class="learning-box">
+
+                        <div class="learning-icon">
+                            ?
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                Help the model learn
+                            </h3>
+
+
+                            <p>
+
+                                The model is not confident.
+
+                                What animal is this?
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="uploaded_filename"
+                            value="{{ uploaded_filename }}"
+                        >
+
+
+                        <input
+                            type="text"
+                            name="animal_name"
+                            placeholder="Enter animal name"
+                            required
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="learn-btn"
+                        >
+
+                            Add to Dataset
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <div class="result-card">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Prediction Result
+                        </h3>
+
+
+                        <p>
+                            AI analysis output
+                        </p>
+
+                    </div>
+
+
+                    <div class="result-icon">
+                        ✦
+                    </div>
+
+                </div>
+
+
+                {% if image_path %}
+
+
+                <div class="result-image">
+
+                    <img
+                        src="{{ image_path }}"
+                        alt="Uploaded Animal"
+                    >
+
+                </div>
+
+
+                {% else %}
+
+
+                <div class="empty-result">
+
+                    <div class="empty-icon">
+                        ◌
+                    </div>
+
+
+                    <h3>
+                        No image analyzed yet
+                    </h3>
+
+
+                    <p>
+                        Upload an image to see the prediction
+                    </p>
+
+                </div>
+
+
+                {% endif %}
+
+
+                {% if prediction %}
+
+
+                <div class="prediction-result">
+
+
+                    <span class="result-label">
+                        PREDICTED ANIMAL
+                    </span>
+
+
+                    <h2>
+                        {{ prediction }}
+                    </h2>
+
+
+                    {% if confidence is not none %}
+
+
+                    <div class="confidence-header">
+
+                        <span>
+                            Confidence
+                        </span>
+
+
+                        <strong>
+                            {{ confidence }}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress"
+                            data-confidence="{{ confidence }}"
+                        ></div>
+
+                    </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </section>
+
+
+        <section class="info-section">
+
+
+            <div class="info-item">
+
+                <strong>
+                    01
+                </strong>
+
+                <span>
+                    Upload your image
+                </span>
+
+            </div>
+
+
+            <div class="line"></div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    02
+                </strong>
+
+                <span>
+                    AI analyzes the image
+                </span>
+
+            </div>
+
+
+            <div class="line"></div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    03
+                </strong>
+
+                <span>
+                    Get your prediction
+                </span>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            Powered by Niks'devp Pvt limited. ALL rights reserved.
+        </p>
+
+    </footer>
+
+
+    <script>
+
+
+        const imageInput = document.getElementById(
+            "imageInput"
+        );
+
+
+        const previewImage = document.getElementById(
+            "previewImage"
+        );
+
+
+        const previewContainer = document.getElementById(
+            "previewContainer"
+        );
+
+
+        const uploadContent = document.getElementById(
+            "uploadContent"
+        );
+
+
+        const dropZone = document.getElementById(
+            "dropZone"
+        );
+
+
+        imageInput.addEventListener(
+            "change",
+            function () {
+
+                const file = this.files[0];
+
+
+                if (file) {
+
+                    const reader = new FileReader();
+
+
+                    reader.onload = function (event) {
+
+                        previewImage.src =
+                            event.target.result;
+
+
+                        previewContainer.style.display =
+                            "block";
+
+
+                        uploadContent.style.display =
+                            "none";
+
+                    };
+
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "dragover",
+            function (event) {
+
+                event.preventDefault();
+
+                dropZone.classList.add(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "dragleave",
+            function () {
+
+                dropZone.classList.remove(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "drop",
+            function (event) {
+
+                event.preventDefault();
+
+
+                dropZone.classList.remove(
+                    "dragging"
+                );
+
+
+                const file =
+                    event.dataTransfer.files[0];
+
+
+                if (file) {
+
+                    imageInput.files =
+                        event.dataTransfer.files;
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function (event) {
+
+                            previewImage.src =
+                                event.target.result;
+
+
+                            previewContainer.style.display =
+                                "block";
+
+
+                            uploadContent.style.display =
+                                "none";
+
+                        };
+
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+        );
+
+
+        const progress =
+            document.querySelector(
+                ".progress"
+            );
+
+
+        if (progress) {
+
+            const confidence =
+                progress.dataset.confidence;
+
+
+            progress.style.width =
+                confidence + "%";
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

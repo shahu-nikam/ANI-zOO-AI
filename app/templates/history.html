@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History · ANI-zOO AI</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">🐾</div>
+            <div>
+                <h2>ANI-zOO AI</h2>
+                <span>Smart Classifier</span>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-links">
+                <span class="nav-user">{{ g.user['username'] }}</span>
+                <a href="{{ url_for('main.home') }}">Classify</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <section class="hero">
+            <p class="eyebrow">YOUR ACTIVITY</p>
+            <h1>Prediction <span>history.</span></h1>
+            <p class="hero-text">Every image you've uploaded, what the AI predicted, and any label you taught it.</p>
+        </section>
+
+        <div class="history-card">
+            {% if records %}
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Predicted</th>
+                        <th>Confidence</th>
+                        <th>Status</th>
+                        <th>Your Label</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in records %}
+                    <tr>
+                        <td>
+                            <img
+                                class="history-thumb"
+                                src="{{ url_for('static', filename='uploads/' ~ r['image_filename']) }}"
+                                alt="{{ r['predicted_animal'] }}"
+                            >
+                        </td>
+                        <td>{{ r['predicted_animal'] }}</td>
+                        <td>{{ r['confidence'] }}%</td>
+                        <td>
+                            {% if r['is_unknown'] %}
+                                <span class="badge badge-unknown">Unknown</span>
+                            {% else %}
+                                <span class="badge badge-known">Recognized</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ r['user_provided_label'] or '—' }}</td>
+                        <td>{{ r['created_at'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-history">
+                <h3>No predictions yet</h3>
+                <p>Upload an image on the Classify page to get started.</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Powered by Niks'devp Pvt limited. ALL rights reserved.</p>
+    </footer>
+
+</body>
+</html>

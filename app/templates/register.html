@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register · ANI-zOO AI</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">🐾</div>
+            <div>
+                <h2>ANI-zOO AI</h2>
+                <span>Smart Classifier</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <h1>Create your account</h1>
+            <p class="auth-sub">Sign up to start classifying animal images.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="message {{ 'error' if category == 'error' else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST" class="auth-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" minlength="6" required>
+
+                <button type="submit" class="auth-submit-btn">Create Account</button>
+            </form>
+
+            <p class="auth-switch">
+                Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered by Niks'devp Pvt limited. ALL rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login · ANI-zOO AI</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">🐾</div>
+            <div>
+                <h2>ANI-zOO AI</h2>
+                <span>Smart Classifier</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <h1>Welcome back</h1>
+            <p class="auth-sub">Log in to identify animals and view your history.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="message {{ 'error' if category == 'error' else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST" class="auth-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit" class="auth-submit-btn">Log In</button>
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered by Niks'devp Pvt limited. ALL rights reserved.</p>
+    </footer>
+
+</body>
+</html>
