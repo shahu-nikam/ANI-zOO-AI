@@ -1,0 +1,3 @@
+download it from here and save it as 
+  animal
+  https://www.kaggle.com/datasets/iamsouravbanerjee/animal-image-dataset-90-different-animals/data
